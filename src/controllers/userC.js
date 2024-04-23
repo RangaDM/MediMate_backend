@@ -1,6 +1,62 @@
 const User = require("../model/user");
 const createError = require("http-errors");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
+const JWT_TOKEN_KEY = "duhfig45656gdfsghfdhfdhd54534ddgd@rg+fd";
+
+exports.login = async (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  try {
+    if (!email || !password) {
+      throw createHttpError(400, "Missing required parameters");
+    }
+
+    const user = await User.findOne({ email: email }).exec();
+
+    if (!user) {
+      throw createHttpError(400, "User does not exist");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      throw createHttpError(400, "Invalid credentials");
+    }
+
+    const userT = await User.findOne({ email: email }).exec();
+
+    const token = jwt.sign(
+      {
+        user_id: userT._id,
+        email: userT.email,
+      },
+      JWT_TOKEN_KEY,
+      {
+        expiresIn: "4h",
+      }
+    );
+
+    userT.token = token;
+
+    const result = await userT.save();
+
+    const response = {
+      id: result._id,
+      name: result.name,
+      email: result.email,
+      token: result.token,
+    };
+
+    console.log(response);
+
+    res.status(200).send(response);
+  } catch (error) {
+    next(error);
+  }
+};
 
 exports.createUser = async (req, res, next) => {
   // console.log(req.body);

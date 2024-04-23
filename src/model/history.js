@@ -1,17 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-
-// -topic
-// -des
-// -date
-// -place
-// -medicine
-// -image
-// -dr.name
-// -price
-// -status
-
 const historySchema = new Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,

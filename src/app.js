@@ -8,21 +8,19 @@ config();
 const app = express();
 app.use(express.json());
 
-app.use('/api/users', require('./routes/userR'));
+app.use('/api/user', require('./routes/userR'));
 
 app.get("/", (req, res, next) => {
   try {
-    // res.send("Hello Ranga!");
+    res.send("Hello Ranga!");
     // throw new Error("Something went wrong!");
-    throw createError(404, "Something went wrong!");
+    // throw createError(404, "Something went wrong!");
   }
   catch (err) {
     next(err);
   }
   // res.send("Hello Ranga!");
 });
-
-app.post('/api/users', );
 
 app.use((err, req, res, next) => {
   if (createError.isHttpError(err)) {
