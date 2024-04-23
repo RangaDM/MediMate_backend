@@ -3,8 +3,6 @@ const createError = require("http-errors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const JWT_TOKEN_KEY = "duhfig45656gdfsghfdhfdhd54534ddgd@rg+fd";
-
 exports.login = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -28,12 +26,13 @@ exports.login = async (req, res, next) => {
 
     const userT = await User.findOne({ email: email }).exec();
 
+    // console.log("xxx",process.env.JWT_TOKEN_KEY);
     const token = jwt.sign(
       {
         user_id: userT._id,
         email: userT.email,
       },
-      JWT_TOKEN_KEY,
+      process.env.JWT_TOKEN_KEY,
       {
         expiresIn: "4h",
       }
